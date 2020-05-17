@@ -70,8 +70,8 @@
 // is character at position i in data allowed before an emphasis section
 #define isOpenEmphChar(i) \
   (data[i]=='\n' || data[i]==' ' || data[i]=='\'' || data[i]=='<' || \
-   data[i]=='{'  || data[i]=='(' || data[i]=='['  || data[i]==',' || \
-   data[i]==':'  || data[i]==';')
+   data[i]=='>'  || data[i]=='{' || data[i]=='('  || data[i]=='[' || \
+   data[i]==','  || data[i]==':' || data[i]==';')
 
 // is character at position i in data an escape that prevents ending an emphasis section
 // so for example *bla (*.txt) is cool*
@@ -1499,8 +1499,11 @@ static bool isFencedCodeBlock(const char *data,int size,int refIndent,
       while (i<size && data[i]==' ') i++;
       if (i==size || data[i]=='\n')
       {
-        offset=i;
-        return endTildes==startTildes;
+        if (endTildes==startTildes)
+	{
+          offset=i;
+          return TRUE;
+        }
       }
     }
     i++;
@@ -1967,7 +1970,8 @@ void writeOneLineHeaderOrRuler(GrowBuf &out,const char *data,int size)
   else if ((level=isAtxHeader(data,size,header,id,TRUE)))
   {
     QCString hTag;
-    if (level<5 && !id.isEmpty())
+    // if (level<5 && !id.isEmpty())
+    if (false)
     {
       switch(level)
       {
