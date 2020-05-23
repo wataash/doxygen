@@ -38,6 +38,8 @@
 #include "plantuml.h"
 #include "formula.h"
 
+#include "/home/wsh/qc/tesc/libwutils/wutils.cc"
+
 static const int NUM_HTML_LIST_TYPES = 4;
 static const char types[][NUM_HTML_LIST_TYPES] = {"1", "a", "i", "A"};
 enum contexts_t
@@ -295,6 +297,7 @@ HtmlDocVisitor::HtmlDocVisitor(FTextStream &t,CodeOutputInterface &ci,
 void HtmlDocVisitor::visit(DocWord *w)
 {
   //printf("word: %s\n",w->word().data());
+  w_d("word: %s\n",w->word().data());
   if (m_hide) return;
   filter(w->word());
 }
@@ -303,6 +306,7 @@ void HtmlDocVisitor::visit(DocLinkedWord *w)
 {
   if (m_hide) return;
   //printf("linked word: %s\n",w->word().data());
+  w_d("linked word: %s\n",w->word().data());
   startLink(w->ref(),w->file(),w->relPath(),w->anchor(),w->tooltip());
   filter(w->word());
   endLink();
@@ -801,6 +805,8 @@ void HtmlDocVisitor::visit(DocIncOperator *op)
 {
   //printf("DocIncOperator: type=%d first=%d, last=%d text='%s'\n",
   //    op->type(),op->isFirst(),op->isLast(),op->text().data());
+  w_d("DocIncOperator: type=%d first=%d, last=%d text='%s'\n",
+     op->type(),op->isFirst(),op->isLast(),op->text().data());
   if (op->isFirst()) 
   {
     forceEndParagraph(op);
@@ -929,6 +935,11 @@ void HtmlDocVisitor::visit(DocIndexEntry *e)
   //       e->scope()  ? e->scope()->name().data()  : "<null>",
   //       e->member() ? e->member()->name().data() : "<null>"
   //      );
+  w_d("*** DocIndexEntry: word='%s' scope='%s' member='%s'\n",
+        e->entry().data(),
+        e->scope()  ? e->scope()->name().data()  : "<null>",
+        e->member() ? e->member()->name().data() : "<null>"
+       );
   Doxygen::indexList->addIndexItem(e->scope(),e->member(),anchor,e->entry());
 }
 
@@ -969,6 +980,7 @@ void HtmlDocVisitor::visit(DocCite *cite)
 void HtmlDocVisitor::visitPre(DocAutoList *l)
 {
   //printf("DocAutoList::visitPre\n");
+  w_d("DocAutoList::visitPre\n");
   if (m_hide) return;
   forceEndParagraph(l);
   if (l->isEnumList())
@@ -994,6 +1006,7 @@ void HtmlDocVisitor::visitPre(DocAutoList *l)
 void HtmlDocVisitor::visitPost(DocAutoList *l)
 {
   //printf("DocAutoList::visitPost\n");
+  w_d("DocAutoList::visitPost\n");
   if (m_hide) return;
   if (l->isEnumList())
   {
@@ -1211,6 +1224,8 @@ static int getParagraphContext(DocPara *p,bool &isFirst,bool &isLast)
     }
     //printf("para=%p parent()->kind=%d isFirst=%d isLast=%d t=%d\n",
     //    p,p->parent()->kind(),isFirst,isLast,t);
+    w_d("para=%p parent()->kind=%d isFirst=%d isLast=%d t=%d\n",
+       p,p->parent()->kind(),isFirst,isLast,t);
   }
   return t;
 }
@@ -1221,6 +1236,8 @@ void HtmlDocVisitor::visitPre(DocPara *p)
 
   //printf("DocPara::visitPre: parent of kind %d ",
   //       p->parent() ? p->parent()->kind() : -1);
+  w_d("DocPara::visitPre: parent of kind %d ",
+        p->parent() ? p->parent()->kind() : -1);
 
   bool needsTag = FALSE;
   if (p && p->parent()) 
@@ -1279,9 +1296,11 @@ void HtmlDocVisitor::visitPre(DocPara *p)
   bool isLast;
   t = getParagraphContext(p,isFirst,isLast);
   //printf("startPara first=%d last=%d\n",isFirst,isLast);
+  w_d("startPara first=%d last=%d\n",isFirst,isLast);
   if (isFirst && isLast) needsTag=FALSE;
 
   //printf("  needsTag=%d\n",needsTag);
+  w_d("  needsTag=%d\n",needsTag);
   // write the paragraph tag (if needed)
   if (needsTag)
     m_t << "<p" << getDirHtmlClassOfNode(getTextDirByConfig(p), contexts[t]) << htmlAttribsToString(p->attribs()) << ">";
@@ -1294,6 +1313,8 @@ void HtmlDocVisitor::visitPost(DocPara *p)
 
   //printf("DocPara::visitPost: parent of kind %d ",
   //       p->parent() ? p->parent()->kind() : -1);
+  w_d("DocPara::visitPost: parent of kind %d ",
+        p->parent() ? p->parent()->kind() : -1);
 
   bool needsTag = FALSE;
   if (p->parent()) 
@@ -1346,9 +1367,11 @@ void HtmlDocVisitor::visitPost(DocPara *p)
   bool isLast;
   getParagraphContext(p,isFirst,isLast);
   //printf("endPara first=%d last=%d\n",isFirst,isLast);
+  w_d("endPara first=%d last=%d\n",isFirst,isLast);
   if (isFirst && isLast) needsTag=FALSE;
 
   //printf("DocPara::visitPost needsTag=%d\n",needsTag);
+  w_d("DocPara::visitPost needsTag=%d\n",needsTag);
 
   if (needsTag) m_t << "</p>\n";
 
@@ -2014,6 +2037,7 @@ void HtmlDocVisitor::visitPost(DocParamSect *s)
 void HtmlDocVisitor::visitPre(DocParamList *pl)
 {
   //printf("DocParamList::visitPre\n");
+  w_d("DocParamList::visitPre\n");
   if (m_hide) return;
   m_t << "    <tr>";
   DocParamSect *sect = 0;
@@ -2089,6 +2113,7 @@ void HtmlDocVisitor::visitPre(DocParamList *pl)
 void HtmlDocVisitor::visitPost(DocParamList *)
 {
   //printf("DocParamList::visitPost\n");
+  w_d("DocParamList::visitPost\n");
   if (m_hide) return;
   m_t << "</td></tr>" << endl;
 }
@@ -2267,6 +2292,7 @@ void HtmlDocVisitor::startLink(const QCString &ref,const QCString &file,
                                const QCString &tooltip)
 {
   //printf("HtmlDocVisitor: file=%s anchor=%s\n",file.data(),anchor.data());
+  w_d("HtmlDocVisitor: file=%s anchor=%s\n",file.data(),anchor.data());
   if (!ref.isEmpty()) // link to entity imported via tag file
   {
     m_t << "<a class=\"elRef\" ";
@@ -2409,6 +2435,7 @@ void HtmlDocVisitor::writePlantUMLFile(const QCString &fileName,
 static bool insideStyleChangeThatIsOutsideParagraph(DocPara *para,int nodeIndex)
 {
   //printf("insideStyleChangeThatIsOutputParagraph(index=%d)\n",nodeIndex);
+  w_d("insideStyleChangeThatIsOutputParagraph(index=%d)\n",nodeIndex);
   int styleMask=0;
   bool styleOutsideParagraph=FALSE;
   while (nodeIndex>=0 && !styleOutsideParagraph)
@@ -2425,6 +2452,7 @@ static bool insideStyleChangeThatIsOutsideParagraph(DocPara *para,int nodeIndex)
                        sc->style()==DocStyleChange::Div    ||
                        sc->style()==DocStyleChange::Preformatted;
       //printf("Found style change %s enabled=%d\n",sc->styleString(),sc->enable());
+      w_d("Found style change %s enabled=%d\n",sc->styleString(),sc->enable());
       if (sc->enable() && (styleMask&(int)sc->style())==0 && // style change that is still active
           paraStyle
          )
@@ -2444,6 +2472,7 @@ static bool insideStyleChangeThatIsOutsideParagraph(DocPara *para,int nodeIndex)
 void HtmlDocVisitor::forceEndParagraph(DocNode *n)
 {
   //printf("forceEndParagraph(%p) %d\n",n,n->kind());
+  w_d("forceEndParagraph(%p) %d\n",n,n->kind());
   if (n->parent() && n->parent()->kind()==DocNode::Kind_Para)
   {
     DocPara *para = (DocPara*)n->parent();
@@ -2463,6 +2492,7 @@ void HtmlDocVisitor::forceEndParagraph(DocNode *n)
     bool isLast;
     getParagraphContext(para,isFirst,isLast);
     //printf("forceEnd first=%d last=%d styleOutsideParagraph=%d\n",isFirst,isLast,styleOutsideParagraph);
+    w_d("forceEnd first=%d last=%d styleOutsideParagraph=%d\n",isFirst,isLast,styleOutsideParagraph);
     if (isFirst && isLast) return;
     if (styleOutsideParagraph) return;
 
@@ -2477,6 +2507,7 @@ void HtmlDocVisitor::forceEndParagraph(DocNode *n)
 void HtmlDocVisitor::forceStartParagraph(DocNode *n)
 {
   //printf("forceStartParagraph(%p) %d\n",n,n->kind());
+  w_d("forceStartParagraph(%p) %d\n",n,n->kind());
   if (n->parent() && n->parent()->kind()==DocNode::Kind_Para) // if we are inside a paragraph
   {
     DocPara *para = (DocPara*)n->parent();
@@ -2506,6 +2537,7 @@ void HtmlDocVisitor::forceStartParagraph(DocNode *n)
     getParagraphContext(para,isFirst,isLast);
     if (isFirst && isLast) needsTag = FALSE;
     //printf("forceStart first=%d last=%d needsTag=%d\n",isFirst,isLast,needsTag);
+    w_d("forceStart first=%d last=%d needsTag=%d\n",isFirst,isLast,needsTag);
 
     if (needsTag)
       m_t << "<p" << getDirHtmlClassOfNode(getTextDirByConfig(para, nodeIndex)) << ">";

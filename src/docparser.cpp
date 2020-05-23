@@ -60,10 +60,10 @@
 #define TK_COMMAND_CHAR(token) ((token)==TK_COMMAND_AT ? '@' : '\\')
 
 // debug off
-#define DBG(x) do {} while(0)
+// #define DBG(x) do {} while(0)
 
 // debug to stdout
-//#define DBG(x) printf x
+#define DBG(x) printf x
 
 // debug to stderr
 //#define myprintf(x...) fprintf(stderr,x)
@@ -6538,6 +6538,9 @@ reparsetoken:
       DBG((" name=%s",qPrint(g_token->name)));
     }
     DBG(("\n"));
+    if (tok == TK_COMMAND_AT) {
+      asm("nop");
+    }
     switch(tok)
     {
       case TK_WORD:

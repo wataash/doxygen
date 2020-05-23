@@ -1,6 +1,11 @@
 Doxygen Internals {#mainpage}
 =================
 
+<h1>_bad_</h1>
+<h1> _good_</h1>
+# md h1
+## md h2
+
 Introduction
 ============
 

@@ -43,6 +43,8 @@
 #include "portable.h"
 #include "cite.h"
 
+#include "/home/wsh/qc/tesc/libwutils/wutils.cc"
+
 #define YY_NO_INPUT 1
 #define YY_NO_UNISTD_H 1
 
@@ -165,6 +167,7 @@ static int computeIndent(const char *str,int length)
 static void processSection()
 {
   //printf("%s: found section/anchor with name '%s'\n",g_fileName.data(),g_secLabel.data());
+  w_d("%s: found section/anchor with name '%s'\n",g_fileName.data(),g_secLabel.data());
   QCString file;
   if (g_definition)
   {
@@ -275,8 +278,11 @@ static void handleHtmlTag()
     else // start next option
     {
     }
+
     //printf("=====> Adding option name=<%s> value=<%s>\n",
     //    opt.name.data(),opt.value.data());
+    w_d("=====> Adding option name=<%s> value=<%s>\n",
+        opt.name.data(),opt.value.data());
     g_token->attribs.append(&opt);
   }
   g_token->attribsStr = tagText.mid(startAttribList,i-startAttribList);
@@ -319,6 +325,7 @@ static QCString stripEmptyLines(const QCString &s)
     p--;
   }
   //printf("stripEmptyLines(%d-%d)\n",start,end);
+  w_d("stripEmptyLines(%d-%d)\n",start,end);
   return s.mid(start,end-start);
 }
 
@@ -1396,6 +1403,7 @@ void doctokenizerYYFindSections(const char *input,const Definition *d,
   printlex(yy_flex_debug, TRUE, __FILE__, fileName);
   g_inputString = input;
   //printf("parsing --->'%s'<---\n",input);
+  w_d("parsing --->'%s'<---\n",input);
   g_inputPos    = 0;
   g_definition  = d;
   g_fileName    = fileName;

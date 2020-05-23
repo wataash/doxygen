@@ -16,7 +16,17 @@
  *
  */
 
+#include <fcntl.h>
+#include <signal.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <unistd.h>
+
 #include "doxygen.h"
+
+#define WUTILS_IMPL
+#include "/home/wsh/qc/tesc/libwutils/wutils.cc"
 
 /*! \file
  *  \brief main entry point for doxygen
@@ -30,6 +40,30 @@
  */
 int main(int argc,char **argv)
 {
+  // {
+  //   // #include <fcntl.h>
+  //   // #include <signal.h>
+  //   // #include <stdbool.h>
+  //   // #include <stdint.h>
+  //   // #include <stdio.h>
+  //   // #include <unistd.h>
+  //   static volatile bool stop = true;
+  //   if (stop) {
+  //     fprintf(stderr, "SIGSTOP %jd\n", (intmax_t)getpid());
+  //     // int fd = open(ttyname(STDERR_FILENO), O_WRONLY);
+  //     // // int fd = open("/dev/pts/2", O_WRONLY);
+  //     // if (fd != -1) {
+  //     //   char buf[100];
+  //     //   snprintf(buf, sizeof(buf), "SIGSTOP %jd\n", (intmax_t)getpid());
+  //     //   (void)write(fd, buf, strnlen(buf, sizeof(buf))); // - 1?
+  //     //   close(fd);
+  //     // }
+  //
+  //     kill(getpid(), SIGSTOP);
+  //     stop = false;
+  //   }
+  // }
+
   initDoxygen();
   readConfiguration(argc,argv);
   checkConfiguration();

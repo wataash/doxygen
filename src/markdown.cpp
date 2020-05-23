@@ -610,12 +610,36 @@ static int processHtmlTag(GrowBuf &out,const char *data,int offset,int size)
 
 static int processEmphasis(GrowBuf &out,const char *data,int offset,int size)
 {
+  char c_1 = data[-1]; (void)c_1;
+  char c0 = data[0]; (void)c0;
+  char c1 = data[1]; (void)c1;
+  char c2 = data[2]; (void)c2;
+  char c3 = data[3]; (void)c3;
+  char c4 = data[4]; (void)c4;
+  char c5 = data[5]; (void)c5;
+  char c6 = data[6]; (void)c6;
+  char c7 = data[7]; (void)c7;
+  char c8 = data[8]; (void)c8;
+  char c9 = data[9]; (void)c9;
+  if (isOpenEmphChar(-1)) {
+    asm("nop");
+  } else {
+    asm("nop");
+  }
+  if (data[0]==data[1]) {
+    asm("nop");
+  } else {
+    asm("nop");
+  }
   if ((offset>0 && !isOpenEmphChar(-1)) || // invalid char before * or _
       (size>1 && data[0]!=data[1] && !(isIdChar(1) || extraChar(1) || data[1]=='[')) || // invalid char after * or _
       (size>2 && data[0]==data[1] && !(isIdChar(2) || extraChar(2) || data[2]=='[')))   // invalid char after ** or __
   {
     return 0;
   }
+
+  // -1 0 1 2 3 4 5 6 7 8 9 0
+  //    _ g o o d _ < / h 1 >
 
   char c = data[0];
   int ret;
@@ -2583,6 +2607,8 @@ QCString processMarkdown(const QCString &fileName,const int lineNr,Entry *e,cons
   //printf("======== Blocks =========\n---- output -----\n%s\n---------\n",s.data());
   // finally process the inline markup (links, emphasis and code spans)
   processInline(out,s,s.length());
+  // s.data()
+  // out.get()
   out.addChar(0);
   Debug::print(Debug::Markdown,0,"======== Markdown =========\n---- input ------- \n%s\n---- output -----\n%s\n=========\n",qPrint(input),qPrint(out.get()));
   return substitute(out.get(),g_doxy_nsbp,"&nbsp;");
@@ -2611,6 +2637,7 @@ QCString processMarkdownForCommentBlock(const QCString &comment,
     const char *p = result.data();
     if (p)
     {
+      printf("processMarkdown():\n\x1b[34m%s\x1b[0m\n", p);
       while (*p==' ')  p++; // skip over spaces
       while (*p=='\n') p++; // skip over newlines
       if (qstrncmp(p,"<br>",4)==0) p+=4; // skip over <br>
@@ -2637,6 +2664,7 @@ struct MarkdownOutlineParser::Private
 
 MarkdownOutlineParser::MarkdownOutlineParser() : p(std::make_unique<Private>())
 {
+  asm("nop");
 }
 
 MarkdownOutlineParser::~MarkdownOutlineParser()
@@ -2658,6 +2686,8 @@ void MarkdownOutlineParser::parseInput(const char *fileName,
   QCString id;
   QCString title=extractPageTitle(docs,id).stripWhiteSpace();
   if (id.startsWith("autotoc_md")) id = "";
+  if (id.startsWith("autotoc_md"))
+    id = "";
   g_indentLevel=title.isEmpty() ? 0 : -1;
   QCString titleFn = QFileInfo(fileName).baseName().utf8();
   QCString fn      = QFileInfo(fileName).fileName().utf8();
@@ -2699,6 +2729,7 @@ void MarkdownOutlineParser::parseInput(const char *fileName,
   bool needsEntry = FALSE;
   int position=0;
   QCString processedDocs = processMarkdownForCommentBlock(docs,fileName,lineNr);
+  // processedDocs.data()
   while (p->commentScanner.parseCommentBlock(
         this,
         current.get(),

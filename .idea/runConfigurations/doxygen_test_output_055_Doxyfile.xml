@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="doxygen test_output_055/Doxyfile" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-dclasses -dcommentcnv -dcommentscan -dextcmd -dfilteroutput -dfindmembers -dfortranfixed2free -dfunctions -dlex -dmarkdown -dplantuml -dpreprocessor -dprinttree -dtime -dvalidate -dvariables $PROJECT_DIR$/build/testing/test_output_055/Doxyfile" PASS_PARENT_ENVS_2="true" PROJECT_NAME="doxygen" TARGET_NAME="doxygen" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="doxygen" RUN_TARGET_NAME="doxygen">
+    <method v="2">
+      <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+    </method>
+  </configuration>
+</component>

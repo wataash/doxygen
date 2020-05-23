@@ -48,12 +48,16 @@ static std::map< std::string, Debug::DebugMask > s_labels =
 //------------------------------------------------------------------------
 
 Debug::DebugMask Debug::curMask = Debug::Quiet;
+// doxygen -d
+// Debug::DebugMask Debug::curMask = Debug::Markdown;
+
 int Debug::curPrio = 0;
 
 void Debug::print(DebugMask mask,int prio,const char *fmt,...)
 {
   if ((curMask&mask) && prio<=curPrio)
   {
+    printf("\x1b[32m%s\x1b[0m", fmt);
     va_list args;
     va_start(args,fmt);
     vfprintf(stdout, fmt, args);
